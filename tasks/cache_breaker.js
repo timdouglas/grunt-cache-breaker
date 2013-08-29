@@ -92,7 +92,7 @@ var makeNewUrl = function( filename, tag, ext ) {
     return (filename + '?rel=' + tag);
   }
   else {
-    var replace_regex = new RegExp("(.*)(\."+ext+")", "i");
+    var replace_regex = new RegExp("(.*)(\\."+ext+")", "i");
     return filename.replace(replace_regex, "$1"+tag+"$2");
   }
 };
