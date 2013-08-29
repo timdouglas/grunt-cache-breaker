@@ -4,12 +4,6 @@
  *
  * Copyright (c) 2013 Shane Osbourne
  * Licensed under the MIT license.
- *
- * Modified by timdouglas:
- * - added options: tag & ext
- *    if both set, insert tag as part of filename, eg file.js => filev1.2.js
- *    if only tag set, insert as query string instead of date time, eg file.js => file.js?rel=v1.2
- *    if neither set, fallback to existing behaviour, eg file.js =? file.js?rel=$timestamp
  */
 
 'use strict';
