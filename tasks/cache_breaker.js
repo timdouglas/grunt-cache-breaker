@@ -85,13 +85,11 @@ var removePrefixes = function( filename, prefix ) {
  * @returns {String}
  */
 var makeNewUrl = function( filename, tag, ext ) {
-  if(tag === undefined && ext === undefined) {
+  if( tag === undefined && ext === undefined ) {
     return (filename + '?rel=' + new Date().getTime());
-  }
-  else if(ext === undefined) {
+  } else if( ext === undefined ) {
     return (filename + '?rel=' + tag);
-  }
-  else {
+  } else {
     var replace_regex = new RegExp("(.*)(\\."+ext+")", "i");
     return filename.replace(replace_regex, "$1"+tag+"$2");
   }
