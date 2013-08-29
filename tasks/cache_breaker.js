@@ -112,6 +112,11 @@ var msgs = {
      return  'Sorry, your config is invalid. Please ensure you provide the `'+prop+'` property';
     },
     generic : 'Sorry, there was an unknown problem. Check all your config properties.'
+  },
+  info: {
+    urlInfo: function( url ) {
+      return 'Cache breaking "'+url+'":';
+    }
   }
 };
 
@@ -253,11 +258,11 @@ module.exports = function(grunt) {
       // run cachebreaker on each asset url
       return this.data.asset_url.forEach(function(url) {
         m( msgs.info.urlInfo( url ) );
-        return run(url, data, options, files);
+        return run( url, data, options, files );
       });
     } else {
       // run cachebreaker on asset url
-      return run(this.data.asset_url, data, options, files);
+      return run( this.data.asset_url, data, options, files );
     }
 
     // Error if this point is reached.
