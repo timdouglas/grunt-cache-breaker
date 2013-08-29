@@ -4,6 +4,12 @@
  *
  * Copyright (c) 2013 Shane Osbourne
  * Licensed under the MIT license.
+ *
+ * Modified by timdouglas:
+ * - added options: tag & ext
+ *    if both set, insert tag as part of filename, eg file.js => filev1.2.js
+ *    if only tag set, insert as query string instead of date time, eg file.js => file.js?rel=v1.2
+ *    if neither set, fallback to existing behaviour, eg file.js =? file.js?rel=$timestamp
  */
 
 'use strict';
@@ -41,6 +47,18 @@ Usage :
       asset_url : '/asset/url.min.js',
       file : 'path/to/single/file.html'
     },
+  },
+  cachebreaker: {
+    options: {
+      tag: '<%= pkg.version %>'
+    },
+    css: {
+      asset_url: '/asset/url.min.css',
+      file: 'single/file.html',
+      options: {
+        ext: 'css'
+      }
+    }
   }
 
  */
@@ -57,12 +75,26 @@ var removePrefixes = function( filename, prefix ) {
 };
 
 /**
- * Append a timestamp to a string
+ * Append a timestamp to a string,
+ * or insert a tag in string,
+ * or append tag to a string
+ *
  * @param {String} filename
+ * @oaram {String} tag (optional)
+ * @param {String} ext (optional)
  * @returns {String}
  */
-var makeNewUrl = function( filename ) {
-  return (filename + '?rel=' + new Date().getTime());
+var makeNewUrl = function( filename, tag, ext ) {
+  if(tag === undefined && ext === undefined) {
+    return (filename + '?rel=' + new Date().getTime());
+  }
+  else if(ext === undefined) {
+    return (filename + '?rel=' + tag);
+  }
+  else {
+    var replace_regex = new RegExp("(.*)(\."+ext+")", "i");
+    return filename.replace(replace_regex, "$1"+tag+"$2");
+  }
 };
 
 /**
@@ -137,7 +169,7 @@ module.exports = function(grunt) {
     var data = grunt.file.read( f.src );
     var cleanUrl   = removePrefixes( options.asset_url, options.remove ),
           regex    = makeTagRegex( cleanUrl ),
-          url      = makeNewUrl( cleanUrl ),
+          url      = makeNewUrl( cleanUrl, options.tag, options.ext ),
           match    = data.match( regex ),
           newData;
 
@@ -158,7 +190,10 @@ module.exports = function(grunt) {
 
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
-        remove : 'app' // default
+        remove : 'app', // default
+        queryString: true,
+        tag    : undefined,
+        ext    : undefined
     });
 
     if( !this.data.asset_url ) {
