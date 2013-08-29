@@ -1,23 +1,29 @@
 {
   "name": "grunt-cache-breaker",
-  "description": "Simple cache-breaker, appends a timestamp to a give asset url",
-  "version": "0.5.3",
-  "homepage": "https://github.com/shakyshane/grunt-cache-breaker",
+  "description": "Simple cache-breaker, appends a timestamp to a give asset url or inserts it into filename",
+  "version": "0.5.4",
+  "homepage": "https://github.com/timdouglas/grunt-cache-breaker",
   "author": {
     "name": "Shane Osbourne",
-    "email": "shane.osbourne8@gmail.com"
+    "email": "shane.osbourne88@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "Tim Douglas",
+      "email": "github@timdouglas.co.uk"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/shakyshane/grunt-cache-breaker.git"
+    "url": "git://github.com/timdouglas/grunt-cache-breaker.git"
   },
   "bugs": {
-    "url": "https://github.com/shakyshane/grunt-cache-breaker/issues"
+    "url": "https://github.com/timdouglas/grunt-cache-breaker/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/shakyshane/grunt-cache-breaker/blob/master/LICENSE-MIT"
+      "url": "https://github.com/timdouglas/grunt-cache-breaker/blob/master/LICENSE-MIT"
     }
   ],
   "main": "Gruntfile.js",
