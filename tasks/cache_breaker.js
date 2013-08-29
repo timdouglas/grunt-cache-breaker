@@ -136,6 +136,57 @@ module.exports = function(grunt) {
   };
 
   /**
+   * Console.log a message
+   * @param {string} msg
+   * @return {*}
+   */
+  var m = function( msg ) {
+    return grunt.log.writeln( msg );
+  };
+
+  /**
+   * Abstraction to allow
+   * cachebreaker on one 
+   * or many asset urls
+   *
+   * @param {string} url - asset url
+   * @param {object} data
+   * @param {object} options
+   * @param {array} files - optional
+   * @returns {*}
+   */
+  var run = function(url, data, options, files) {
+
+    //make asset url available as an option
+    options.asset_url = url;
+
+    // An array passed to [file]
+    if ( Array.isArray(data.file) ) {
+      return data.file.forEach( function( path ) {
+        return processFile( path, path, options );
+      });
+    }
+
+    // A String passed to [file]
+    if ( typeof data.file === 'string' ) {
+      return processFile( data.file, data.file, options);
+    }
+
+    // Files key used
+    if (files) {
+      return files.forEach(function(f) {
+        if (f.src instanceof Array) {
+          return f.src.forEach(function (fv) {
+            return processFile(fv, fv, options);
+          });
+        } else {
+          return processFile( f.src[0], f.dest,  options );
+        }
+      });
+    }
+  };
+
+  /**
    * @param {string} src
    * @param {string} dest
    * @param {object} options
@@ -178,7 +229,7 @@ module.exports = function(grunt) {
 
   };
 
-  grunt.registerMultiTask('cachebreaker', 'Add a timestamp to a url string', function() {
+  grunt.registerMultiTask('cachebreaker', 'Add a timestamp or version tag to a url string', function() {
 
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
@@ -186,7 +237,9 @@ module.exports = function(grunt) {
         queryString: true,
         tag    : undefined,
         ext    : undefined
-    });
+      }),
+      data = this.data,
+      files = this.files;
 
     if( !this.data.asset_url ) {
       return e( msgs.errors.config('asset_url') );
@@ -196,32 +249,15 @@ module.exports = function(grunt) {
       return e( msgs.errors.config('file or files') );
     }
 
-    // Make asset_url always availble to options.
-    options.asset_url = this.data.asset_url;
-
-    // An array passed to [file]
-    if ( Array.isArray(this.data.file) ) {
-      return this.data.file.forEach( function( path ) {
-        return processFile( path, path, options );
+    if(Array.isArray(this.data.asset_url) === true) {
+      // run cachebreaker on each asset url
+      return this.data.asset_url.forEach(function(url) {
+        m( msgs.info.urlInfo( url ) );
+        return run(url, data, options, files);
       });
-    }
-
-    // A String passed to [file]
-    if ( typeof this.data.file === 'string' ) {
-      return processFile( this.data.file, this.data.file, options);
-    }
-
-    // Files key used
-    if (this.files) {
-      return this.files.forEach(function(f) {
-        if (f.src instanceof Array) {
-          return f.src.forEach(function (fv) {
-            return processFile(fv, fv, options);
-          });
-        } else {
-          return processFile( f.src[0], f.dest,  options );
-        }
-      });
+    } else {
+      // run cachebreaker on asset url
+      return run(this.data.asset_url, data, options, files);
     }
 
     // Error if this point is reached.
